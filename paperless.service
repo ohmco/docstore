@@ -1,16 +1,15 @@
 # Systemd service file for Paperless-ngx
 # 
-# IMPORTANT: Before using this file, update WorkingDirectory below with the actual path
-# to your docstore directory (e.g., /home/youruser/docstore)
+# IMPORTANT: Before using this file, update the WorkingDirectory path below.
+# Replace YOUR_USERNAME with your actual username or use the full path.
+# Example: /home/john/docstore or /opt/paperless/docstore
 # 
 # Installation:
-#   1. Edit this file and replace YOUR_USERNAME with your actual username
+#   1. Edit this file and update the WorkingDirectory path
 #   2. sudo cp paperless.service /etc/systemd/system/
 #   3. sudo systemctl daemon-reload
 #   4. sudo systemctl enable paperless
 #   5. sudo systemctl start paperless
-#
-# Copy this to /etc/systemd/system/paperless.service
 
 [Unit]
 Description=Paperless-ngx Document Management System

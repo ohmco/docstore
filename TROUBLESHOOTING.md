@@ -306,8 +306,8 @@ df -h
 docker system prune -a
 docker volume prune
 
-# Remove old log files
-sudo journalctl --vacuum-time=7d
+# Remove old log files (use vacuum-size for safer cleanup)
+sudo journalctl --vacuum-size=500M
 ```
 
 ## Reset Admin Password

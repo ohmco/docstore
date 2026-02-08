@@ -57,9 +57,9 @@ if [ -f "${BACKUP_DIR}/paperless_db.sql" ]; then
     docker compose up -d db
     sleep 10
     
-    # Drop and recreate database
-    docker compose exec -T db psql -U paperless -c "DROP DATABASE IF EXISTS paperless;"
-    docker compose exec -T db psql -U paperless -c "CREATE DATABASE paperless;"
+    # Drop and recreate database (connect to postgres database to avoid connection errors)
+    docker compose exec -T db psql -U paperless -d postgres -c "DROP DATABASE IF EXISTS paperless;"
+    docker compose exec -T db psql -U paperless -d postgres -c "CREATE DATABASE paperless;"
     
     # Restore database
     cat "${BACKUP_DIR}/paperless_db.sql" | docker compose exec -T db psql -U paperless paperless

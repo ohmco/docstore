@@ -28,8 +28,9 @@ echo "Waiting for services to be ready..."
 sleep 30
 
 # Clean up old Docker images (keep images from last $IMAGE_RETENTION_DAYS days)
+HOURS=$((IMAGE_RETENTION_DAYS * 24))
 echo "Cleaning up old Docker images (keeping last ${IMAGE_RETENTION_DAYS} days)..."
-docker image prune -af --filter "until=$((IMAGE_RETENTION_DAYS * 24))h"
+docker image prune -af --filter "until=${HOURS}h"
 
 # Optimize database
 echo "Optimizing database..."

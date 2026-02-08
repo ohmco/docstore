@@ -115,7 +115,7 @@ if [ -z "$PAPERLESS_ADMIN_MAIL" ] || [ "$PAPERLESS_ADMIN_MAIL" = "admin@example.
     WARNINGS=$((WARNINGS + 1))
 else
     # Basic email validation
-    if [[ "$PAPERLESS_ADMIN_MAIL" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
+    if [[ "$PAPERLESS_ADMIN_MAIL" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9\.-]+\.[a-zA-Z]{2,}$ ]]; then
         echo -e "${GREEN}✓ PAPERLESS_ADMIN_MAIL is set to: $PAPERLESS_ADMIN_MAIL${NC}"
     else
         echo -e "${YELLOW}⚠ PAPERLESS_ADMIN_MAIL doesn't look like a valid email${NC}"
