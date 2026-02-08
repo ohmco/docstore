@@ -147,12 +147,21 @@ sudo ufw status
 sudo apt install certbot python3-certbot-nginx -y
 
 # Obtain SSL certificate
+# Certbot will automatically detect the nginx configuration and offer to configure HTTPS
 sudo certbot --nginx -d your-domain.com
 
-# Certbot will automatically configure HTTPS
+# Follow the prompts:
+# - Enter your email address
+# - Agree to terms of service
+# - Choose whether to redirect HTTP to HTTPS (recommended: yes)
 ```
 
-After obtaining the SSL certificate, update the Nginx configuration to use HTTPS (uncomment the HTTPS server block in `nginx.conf`).
+Certbot will automatically:
+- Obtain the SSL certificate
+- Configure Nginx to use HTTPS
+- Set up automatic certificate renewal
+
+If you prefer manual configuration, you can uncomment the HTTPS server block in `nginx.conf` and configure it yourself.
 
 ## Post-Installation Configuration
 
