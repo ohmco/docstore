@@ -28,9 +28,16 @@ echo "Waiting for services to be ready..."
 sleep 30
 
 # Clean up old Docker images (keep images from last $IMAGE_RETENTION_DAYS days)
-HOURS=$((IMAGE_RETENTION_DAYS * 24))
-echo "Cleaning up old Docker images (keeping last ${IMAGE_RETENTION_DAYS} days)..."
-docker image prune -af --filter "until=${HOURS}h"
+# WARNING: This prunes ALL unused images on the system, not just Paperless-ngx
+# Set SKIP_IMAGE_PRUNE=1 to skip this step if you have other Docker projects
+if [ "${SKIP_IMAGE_PRUNE}" != "1" ]; then
+    HOURS=$((IMAGE_RETENTION_DAYS * 24))
+    echo "Cleaning up old Docker images (keeping last ${IMAGE_RETENTION_DAYS} days)..."
+    echo -e "${YELLOW}This will prune ALL unused images on this system.${NC}"
+    docker image prune -af --filter "until=${HOURS}h"
+else
+    echo "Skipping Docker image cleanup (SKIP_IMAGE_PRUNE=1)"
+fi
 
 # Optimize database
 echo "Optimizing database..."

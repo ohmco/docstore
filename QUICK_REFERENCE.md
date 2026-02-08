@@ -51,8 +51,11 @@ docker compose pull && docker compose up -d && docker image prune -a
 ## Backup & Restore
 
 ```bash
-# Create backup
-./backup.sh
+# Create backup (default: /var/backups/paperless, may require sudo)
+sudo ./backup.sh
+
+# Create backup to custom location
+BACKUP_DIR=/home/user/backups ./backup.sh
 
 # Restore from backup
 ./restore.sh /var/backups/paperless/paperless_backup_YYYYMMDD_HHMMSS.tar.gz
@@ -67,6 +70,9 @@ ls -lh /var/backups/paperless/
 # Run maintenance script
 ./maintenance.sh
 
+# Skip global image cleanup (if you have other Docker projects)
+SKIP_IMAGE_PRUNE=1 ./maintenance.sh
+
 # Optimize database
 docker compose exec db vacuumdb -U paperless -d paperless -z
 
@@ -74,7 +80,7 @@ docker compose exec db vacuumdb -U paperless -d paperless -z
 df -h
 docker system df
 
-# Clean up Docker resources
+# Clean up Docker resources (WARNING: global operation)
 docker system prune -a
 docker volume prune
 ```
@@ -204,7 +210,12 @@ Key variables in `.env`:
 - `PAPERLESS_ADMIN_USER` - Admin username
 - `PAPERLESS_ADMIN_PASSWORD` - Admin password
 - `PAPERLESS_TIME_ZONE` - Timezone
-- `PAPERLESS_OCR_LANGUAGE` - OCR language(s)
+- `PAPERLESS_OCR_LANGUAGE` - OCR language(s) (plus-separated, e.g., `eng+deu+fra`)
+- `PAPERLESS_BIND_ADDRESS` - Port binding (default: `127.0.0.1`, use `0.0.0.0` for external access)
+
+Operational variables:
+- `BACKUP_DIR` - Backup location (default: `/var/backups/paperless`)
+- `SKIP_IMAGE_PRUNE` - Set to `1` to skip global image cleanup in maintenance.sh
 
 ## Useful Paths
 

@@ -4,6 +4,7 @@
 # This script restores Paperless from a backup
 
 set -e
+set -o pipefail
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -70,7 +71,7 @@ if [ -f "${BACKUP_DIR}/paperless_db.sql" ]; then
     docker compose exec -T db psql -U paperless -d postgres -c "CREATE DATABASE paperless;"
     
     # Restore database
-    cat "${BACKUP_DIR}/paperless_db.sql" | docker compose exec -T db psql -U paperless paperless
+    docker compose exec -T db psql -U paperless paperless < "${BACKUP_DIR}/paperless_db.sql"
     
     docker compose down
 fi

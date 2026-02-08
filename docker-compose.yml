@@ -22,13 +22,16 @@ services:
       - paperless
 
   webserver:
+    # Using :latest for simplicity; pin to a specific version for production
+    # (e.g., ghcr.io/paperless-ngx/paperless-ngx:2.5.3)
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     restart: unless-stopped
     depends_on:
       - db
       - broker
     ports:
-      - "8000:8000"
+      # Bind to localhost by default; set PAPERLESS_BIND_ADDRESS=0.0.0.0 to expose externally
+      - "${PAPERLESS_BIND_ADDRESS:-127.0.0.1}:8000:8000"
     healthcheck:
       test: ["CMD", "curl", "-fs", "-S", "--max-time", "2", "http://localhost:8000"]
       interval: 30s

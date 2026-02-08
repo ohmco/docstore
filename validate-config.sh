@@ -31,8 +31,27 @@ fi
 echo -e "${GREEN}✓ Found .env file${NC}"
 echo ""
 
-# Load .env
-source .env 2>/dev/null || true
+# Load .env safely: only simple KEY=VALUE assignments
+while IFS= read -r line; do
+    # Skip empty lines and comments
+    case "$line" in
+        ''|'#'*) continue ;;
+    esac
+
+    # Only process lines that look like VAR=VALUE with a safe variable name
+    if ! printf '%s\n' "$line" | grep -qE '^[A-Za-z_][A-Za-z0-9_]*='; then
+        continue
+    fi
+
+    key=${line%%=*}
+    value=${line#*=}
+
+    # Strip possible trailing carriage return (Windows line endings)
+    value=${value%$'\r'}
+
+    # Export without evaluating the value as code
+    export "$key=$value"
+done < .env
 
 # Check required variables
 echo "Checking required variables..."

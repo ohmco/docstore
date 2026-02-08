@@ -71,7 +71,8 @@ if [ "$SKIP_CONFIG" != "true" ]; then
     
     # Get admin password
     echo "Enter admin password (leave empty to generate a random one):"
-    read -s ADMIN_PASSWORD
+    read -rs ADMIN_PASSWORD
+    echo
     if [ -z "$ADMIN_PASSWORD" ]; then
         ADMIN_PASSWORD=$(openssl rand -base64 16)
         echo -e "${GREEN}Generated admin password: ${ADMIN_PASSWORD}${NC}"

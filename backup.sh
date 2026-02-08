@@ -6,7 +6,7 @@
 set -e
 
 # Configuration
-BACKUP_DIR="/var/backups/paperless"
+BACKUP_DIR="${BACKUP_DIR:-/var/backups/paperless}"
 DATE=$(date +%Y%m%d_%H%M%S)
 BACKUP_NAME="paperless_backup_${DATE}"
 RETENTION_DAYS=30
@@ -17,10 +17,17 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Save the project directory before changing directories
+PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 echo "Starting Paperless-ngx backup at $(date)"
 
-# Create backup directory if it doesn't exist
-mkdir -p "${BACKUP_DIR}"
+# Check if backup directory is writable
+if ! mkdir -p "${BACKUP_DIR}" 2>/dev/null; then
+    echo -e "${RED}Error: Cannot create backup directory ${BACKUP_DIR}${NC}"
+    echo "Please run with sudo or set BACKUP_DIR environment variable to a writable location."
+    exit 1
+fi
 
 # Create a temporary directory for this backup
 TEMP_BACKUP_DIR="${BACKUP_DIR}/${BACKUP_NAME}"
@@ -71,8 +78,8 @@ echo "Cleaning up old backups (older than ${RETENTION_DAYS} days)..."
 find "${BACKUP_DIR}" -name "paperless_backup_*.tar.gz" -type f -mtime +${RETENTION_DAYS} -delete
 echo -e "${GREEN}Backup process completed at $(date)${NC}"
 
-# Clean up export directory
-rm -rf export/* 2>/dev/null || true
+# Clean up export directory (use absolute path to project export dir)
+rm -rf "${PROJECT_DIR}/export"/* 2>/dev/null || true
 
 # Display remaining backups
 echo ""

@@ -98,8 +98,11 @@ docker compose logs -f webserver
 
 Once the services are running, you can access Paperless-ngx at:
 
-- `http://your-vps-ip:8000` (if accessing directly)
-- Or through your domain if you've configured Nginx (see next step)
+**Note:** By default, Paperless is bound to localhost (127.0.0.1) for security. To access it:
+- From the VPS itself: `http://localhost:8000`
+- From another machine: Set up the Nginx reverse proxy (see next step) or set `PAPERLESS_BIND_ADDRESS=0.0.0.0` in `.env` (not recommended without a firewall/proxy)
+
+For production, it's strongly recommended to use Nginx as a reverse proxy with SSL/HTTPS (see next step).
 
 Log in with the admin credentials you set in the `.env` file.
 
@@ -197,6 +200,24 @@ docker compose logs -f webserver
 
 ### Updating Paperless-ngx
 
+**Important:** The default configuration uses `:latest` tag for simplicity. For production, consider pinning to a specific version:
+
+```bash
+# Edit docker-compose.yml and change:
+# image: ghcr.io/paperless-ngx/paperless-ngx:latest
+# to:
+# image: ghcr.io/paperless-ngx/paperless-ngx:2.5.3
+
+# Then update
+docker compose pull
+docker compose up -d
+
+# Clean up old images
+docker image prune -a
+```
+
+To update with the :latest tag:
+
 ```bash
 # Pull the latest image
 docker compose pull
@@ -209,6 +230,26 @@ docker image prune -a
 ```
 
 ### Backup
+
+**Configure Backup Location:**
+
+By default, backups are stored in `/var/backups/paperless` (requires sudo). To use a different location:
+
+```bash
+# Set custom backup directory
+export BACKUP_DIR=/home/youruser/paperless-backups
+./backup.sh
+```
+
+**Run Backup:**
+
+```bash
+# Default location (may require sudo)
+sudo ./backup.sh
+
+# Or with custom location
+BACKUP_DIR=/home/youruser/backups ./backup.sh
+```
 
 See `backup.sh` for automated backup scripts.
 
