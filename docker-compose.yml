@@ -58,9 +58,13 @@ services:
 
 volumes:
   data:
+    name: docstore_data
   media:
+    name: docstore_media
   pgdata:
+    name: docstore_pgdata
   redisdata:
+    name: docstore_redisdata
 
 networks:
   paperless:

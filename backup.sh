@@ -27,7 +27,9 @@ mkdir -p "${TEMP_BACKUP_DIR}"
 
 # Export Paperless documents
 echo "Exporting documents..."
-docker compose exec -T webserver document_exporter /usr/src/paperless/export 2>&1 || true
+if ! docker compose exec -T webserver document_exporter /usr/src/paperless/export 2>&1; then
+    echo -e "${YELLOW}Warning: Document export failed or produced errors. Continuing with backup...${NC}"
+fi
 
 # Backup data volumes
 echo "Backing up data volume..."

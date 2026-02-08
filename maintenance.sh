@@ -5,6 +5,9 @@
 
 set -e
 
+# Configuration
+IMAGE_RETENTION_DAYS=30  # Keep images from the last 30 days
+
 # Colors
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -24,9 +27,9 @@ docker compose up -d
 echo "Waiting for services to be ready..."
 sleep 30
 
-# Clean up old Docker images
-echo "Cleaning up old Docker images..."
-docker image prune -af --filter "until=720h"
+# Clean up old Docker images (keep images from last $IMAGE_RETENTION_DAYS days)
+echo "Cleaning up old Docker images (keeping last ${IMAGE_RETENTION_DAYS} days)..."
+docker image prune -af --filter "until=$((IMAGE_RETENTION_DAYS * 24))h"
 
 # Optimize database
 echo "Optimizing database..."
