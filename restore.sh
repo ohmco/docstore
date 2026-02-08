@@ -44,6 +44,14 @@ docker compose down
 
 # Extract backup
 TEMP_DIR=$(mktemp -d)
+
+cleanup() {
+    if [ -n "${TEMP_DIR}" ] && [ -d "${TEMP_DIR}" ]; then
+        rm -rf "${TEMP_DIR}"
+    fi
+}
+
+trap cleanup EXIT INT TERM
 echo "Extracting backup to ${TEMP_DIR}..."
 tar xzf "${BACKUP_FILE}" -C "${TEMP_DIR}"
 
